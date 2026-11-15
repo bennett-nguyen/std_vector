@@ -1,1 +1,1 @@
-Is this accurate according to the C++ standards? Probably not, but writing this does teach me about how stuff works under the hood.
+Is this accurate according to the C++ standards? Probably not, but writing this does teach me about how stuff works under the hood. The version of this implementation ranges from C++11 until C++20 and for now it only supports default allocators.
