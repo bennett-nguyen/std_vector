@@ -1,2 +1,1 @@
-# my_vector
-My implementation of the C++ std::vector.
+Is this accurate according to the C++ standards? Probably not, but writing this does teach me about how stuff works under the hood.
