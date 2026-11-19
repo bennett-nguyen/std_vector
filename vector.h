@@ -1,6 +1,7 @@
 // An implementation of std::vector - a dynamic sequence container provided by the Standard Template Library (STL);
 // C++ Version: Since C++11, until C++20.
 // Referred from: https://en.cppreference.com/cpp/container/vector
+// WARNING: This only works for default allocators!
 //
 // Copyright (C) 2026  Nguyen Vinh Phu
 //
@@ -25,20 +26,22 @@
 #include <cstring>
 #include <cmath>
 #include <new>
+#include <algorithm>
+#include <iterator>
 
 template<typename T, typename Allocator = std::allocator<T>>
 class Vector {
-    T* m_Buffer {};
-    Allocator m_Alloc {};
-    size_t m_Size {};
-    size_t m_Capacity {};
 public:
     // Member types
-    typedef T                  value_type;
-    typedef Allocator          allocator_type;
-    typedef std::size_t        size_type;
-    typedef value_type&        reference;
-    typedef const value_type&  const_reference;
+    using value_type             = T;
+    using allocator_type         = Allocator;
+    using size_type              = std::size_t;
+    using reference              = value_type&;
+    using const_reference        = const value_type&;
+    using iterator               = T*;
+    using const_iterator         = const T*;
+    using reverse_iterator       = std::reverse_iterator<iterator>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     // Member functions
     Vector() noexcept(noexcept(Allocator())) : Vector(Allocator()) {};
@@ -54,28 +57,59 @@ public:
     ~Vector();
 
     Vector& operator=(const Vector& other);
-    Vector& operator=(Vector& other);
+    Vector& operator=(Vector&& other);
     Vector& operator=(std::initializer_list<value_type> ilist);
 
     // Element access
-    T& operator[](size_t pos);
-    const T& operator[](size_t pos) const;
-    T& at(size_t pos);
-    const T& at(size_t pos) const;
-    T* data() noexcept;
-    const T* data() const noexcept;
+    reference       operator[](size_type pos);
+    const_reference operator[](size_type pos) const;
+
+    reference       at(size_type pos);
+    const_reference at(size_type pos) const;
+
+    T* data();
+    const T* data() const;
+
+    reference front();
+    const_reference front() const;
+
+    reference back();
+    const_reference back() const;
+
+    iterator begin() noexcept;
+    const_iterator begin() const noexcept;
+    const_iterator cbegin() const noexcept;
+
+    iterator end() noexcept;
+    const_iterator end() const noexcept;
+    const_iterator cend() const noexcept;
+
+    reverse_iterator rbegin() noexcept;
+    const_reverse_iterator rbegin() const noexcept;
+    const_reverse_iterator crbegin() const noexcept;
+
+    reverse_iterator rend() noexcept;
+    const_reverse_iterator rend() const noexcept;
+    const_reverse_iterator crend() const noexcept;
 
     // Capacity
     bool empty() const noexcept;
-    size_t max_size() const noexcept;
-    size_t size() const noexcept;
-    size_t capacity() const noexcept;
+    size_type max_size() const noexcept;
+    size_type size() const noexcept;
+    void reserve(size_type new_cap);
+    size_type capacity() const noexcept;
+    void shrink_to_fit();
 
     // Modifiers
     void clear();
-    void reserve(size_t n);
     void push_back(const T& element);
     void pop_back();
+
+private:
+    T* m_Buffer {};
+    Allocator m_Alloc {};
+    size_type m_Size {};
+    size_type m_Capacity {};
 };
 
 #include "vector.tpp"
